@@ -1,0 +1,11 @@
+pre-push:
+  commands:
+    biome-check:
+      root: packages/
+      glob: "**/*.{ts,tsx,js,jsx,json}"
+      run: pnpm --filter './packages/*' exec biome check .
+    test:
+      root: packages/
+      glob: "**/*.{ts,tsx,js,jsx}"
+      run: pnpm --filter './packages/*' test
+

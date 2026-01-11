@@ -1,0 +1,43 @@
+{
+	"name": "umjik-monorepo",
+	"version": "0.1.0",
+	"private": true,
+	"packageManager": "pnpm@10.17.0",
+	"scripts": {
+		"build": "pnpm -r --filter './packages/*' build",
+		"lint": "pnpm -r lint",
+		"lint:fix": "pnpm -r lint:fix",
+		"format": "pnpm -r format",
+		"test": "pnpm -r --filter './packages/*' test",
+		"clean": "pnpm -r exec rm -rf node_modules dist build .turbo",
+		"example": "pnpm --filter @umjik/example start",
+		"example:ios": "pnpm --filter @umjik/example ios",
+		"example:android": "pnpm --filter @umjik/example android",
+		"example:prebuild": "pnpm --filter @umjik/example prebuild",
+		"example:prebuild:clean": "pnpm --filter @umjik/example prebuild:clean"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.4",
+		"lefthook": "^1.11.0",
+		"typescript": "~5.9.2"
+	},
+	"pnpm": {
+		"overrides": {
+			"metro": "0.82.2",
+			"metro-resolver": "0.82.2",
+			"metro-babel-transformer": "0.82.2",
+			"metro-react-native-babel-transformer": "0.82.2",
+			"metro-runtime": "0.82.2",
+			"metro-file-map": "0.82.2",
+			"metro-config": "0.82.2",
+			"metro-core": "0.82.2",
+			"metro-cache": "0.82.2",
+			"metro-cache-key": "0.82.2",
+			"metro-source-map": "0.82.2",
+			"metro-symbolicate": "0.82.2",
+			"metro-transform-plugins": "0.82.2",
+			"metro-transform-worker": "0.82.2",
+			"metro-minify-terser": "0.82.2"
+		}
+	}
+}
