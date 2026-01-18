@@ -1,4 +1,5 @@
-import { type ComponentProps, type ComponentRef, createElement, forwardRef } from "react";
+import type { ComponentProps, ComponentRef, PropsWithoutRef } from "react";
+import { createElement, forwardRef } from "react";
 import { useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 import { PHYSICAL_KEYS, TRANSFORM_KEYS } from "../consts";
 import { useIsomorphicLayoutEffect } from "../hooks";
@@ -7,7 +8,7 @@ import { hasMotionProps } from "../utils";
 
 export function createMotionComponent<C extends MotionComponent<any>>(Component: C) {
 	type OriginalProps = ComponentProps<C>;
-	type Props = OriginalProps & MotionProps;
+	type Props = PropsWithoutRef<OriginalProps & MotionProps>;
 	type Ref = ComponentRef<C>;
 
 	const AnimatedInner = forwardRef<Ref, Props>((_props, ref) => {
