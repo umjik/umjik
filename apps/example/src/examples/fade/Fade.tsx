@@ -1,22 +1,22 @@
 import { useState } from "react";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { Button, StyleSheet, View } from "react-native";
 import { Motion } from "umjik";
 
-export const FadeIn = () => {
-	const [isVisible, setIsVisible] = useState(false);
+export const Fade = () => {
+	const [isVisible, setIsVisible] = useState(true);
 
 	return (
 		<View style={styles.wrapper}>
 			<Motion.View
 				style={styles.container}
-				initial={{ opacity: 0, translateY: 20 }}
-				animate={isVisible ? { opacity: 1, translateY: 0 } : { opacity: 0, translateY: 20 }}
-			>
-				<Text style={styles.text}>FadeIn Animation!</Text>
-			</Motion.View>
-
+				initial={{ opacity: 1 }}
+				animate={isVisible ? { opacity: 1 } : { opacity: 0 }}
+			/>
 			<View style={styles.buttonContainer}>
-				<Button title={isVisible ? "Hide" : "Show"} onPress={() => setIsVisible((prev) => !prev)} />
+				<Button
+					title={isVisible ? "Fade Out" : "Fade In"}
+					onPress={() => setIsVisible((prev) => !prev)}
+				/>
 			</View>
 		</View>
 	);
@@ -28,6 +28,8 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 	},
 	container: {
+		width: 100,
+		height: 100,
 		padding: 20,
 		backgroundColor: "#007AFF",
 		borderRadius: 12,
