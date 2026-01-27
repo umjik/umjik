@@ -1,0 +1,42 @@
+flowchart TB
+    subgraph MenuStructure["Menu 구조 (menus.ts)"]
+        RootMenus["RootMenu[]"]
+        
+        subgraph MenuContexts["Menu Contexts"]
+            General["context: general"]
+            Community["context: community"]
+            Commerce["context: commerce"]
+        end
+    end
+
+    subgraph MenuTypes["Menu 타입"]
+        NonResourceMenu["비-리소스 메뉴<br/>key + url"]
+        ResourceMenu["리소스 메뉴<br/>resource: ResourceName"]
+        NestedMenu["중첩 메뉴<br/>key + children[]"]
+    end
+
+    subgraph MenuCommon["공통 속성"]
+        LabelKey["labelKey: string"]
+        Permission["permission: MenuPermission"]
+        Label["label: ReactNode"]
+    end
+
+    subgraph MenuPermission["MenuPermission"]
+        Action["action: string"]
+        TargetType["targetType?: string"]
+    end
+
+    subgraph InferMenu["inferMenu() 처리"]
+        AutoKey["key 자동 설정"]
+        AutoLabel["label 자동 생성"]
+        AutoUrl["url 자동 설정 (listUrl)"]
+        AutoPermission["permission 자동 설정<br/>{action: 'list', targetType}"]
+        LinkWrap["url 있으면 Link 래핑"]
+        ChildrenRecursive["children 재귀 처리"]
+    end
+
+    RootMenus --> MenuContexts
+    MenuContexts --> MenuTypes
+    MenuTypes --> MenuCommon
+    MenuCommon --> MenuPermission
+    MenuTypes --> InferMenu

@@ -1,0 +1,40 @@
+sequenceDiagram
+    participant Component as Component
+    participant Can as Can Component
+    participant UseAbilities as useAbilities Hook
+    participant DataLoader as abilityLoader
+    participant Apollo as Apollo Client
+    participant Server as GraphQL Server
+
+    Component->>Can: Can action="update" targetType="USER" targetId="123"
+    Can->>Can: abilityKeys 생성
+
+    Can->>UseAbilities: useAbilities([{ action, targetType, targetId, field }])
+    
+    rect rgb(240, 248, 255)
+        Note over UseAbilities,DataLoader: DataLoader 배칭
+        UseAbilities->>DataLoader: abilityLoader.loadMany(inputs)
+        
+        Note over DataLoader: 여러 권한 요청을 하나로 배칭
+        DataLoader->>DataLoader: cacheKey 생성 action:targetType:targetId:field
+    end
+
+    rect rgb(255, 248, 240)
+        Note over DataLoader,Server: GraphQL 쿼리
+        DataLoader->>Apollo: client.query({ query: CAN_QUERY, variables })
+        
+        Note right of Apollo: query can($inputs: [CanInput!]!) { can(inputs: $inputs) }
+        
+        Apollo->>Server: GraphQL Request
+        Server-->>Apollo: { can: [true, false, ...] }
+        Apollo-->>DataLoader: CanResult[]
+    end
+
+    DataLoader-->>UseAbilities: abilities: boolean[]
+    UseAbilities-->>Can: { abilities, loading }
+
+    alt abilities[0] === true
+        Can-->>Component: children (fulfill) 렌더링
+    else abilities[0] === false
+        Can-->>Component: reject 렌더링 (또는 null)
+    end

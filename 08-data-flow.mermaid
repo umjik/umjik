@@ -1,0 +1,55 @@
+flowchart TB
+    subgraph DataFlow["데이터 흐름"]
+        direction TB
+        
+        subgraph ResourcesFile["resources.ts"]
+            ResourceDef["Resource 정의<br/>{name, components, ...}"]
+        end
+
+        subgraph MenusFile["menus.ts"]
+            MenuDef["Menu 정의<br/>{context, children, permission}"]
+        end
+
+        subgraph GodContext["God Context"]
+            InferR["inferResource()<br/>URL, Label 자동 생성"]
+            InferM["inferMenu()<br/>권한, 라벨 자동 생성"]
+            BuiltResources["BuiltResourceMap"]
+            BuiltMenus["BuiltMenu[]"]
+        end
+
+        subgraph Router["React Router"]
+            DynamicRoutes["동적 라우트 생성"]
+        end
+
+        subgraph Pages["페이지 컴포넌트"]
+            ListP["ListPage"]
+            DetailP["DetailPage"]
+            FormP["FormPage"]
+        end
+
+        subgraph Hooks["핵심 Hooks"]
+            UseRes["useResource()"]
+            UseAbi["useAbilities()"]
+            UseFie["useFields()"]
+            UseBre["useBreadcrumb()"]
+        end
+
+        subgraph GraphQL["GraphQL Layer"]
+            Queries["Queries"]
+            Mutations["Mutations"]
+            CanQuery["can() Query"]
+        end
+    end
+
+    ResourceDef --> InferR
+    MenuDef --> InferM
+    InferR --> BuiltResources
+    InferM --> BuiltMenus
+    
+    BuiltResources --> DynamicRoutes
+    DynamicRoutes --> Pages
+    
+    Pages --> Hooks
+    Hooks --> GraphQL
+    
+    BuiltMenus --> UseAbi

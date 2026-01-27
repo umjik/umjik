@@ -1,0 +1,61 @@
+sequenceDiagram
+    participant User as User
+    participant Router as Router
+    participant FormPage as FormPage
+    participant UseResource as useResource
+    participant UseQuery as useQuery
+    participant UseFormFields as useFormFields
+    participant UseFormDefaultValues as useFormDefaultValues
+    participant MutationForm as MutationForm
+    participant Form as Form
+    participant UseMutation as useMutation
+
+    User->>Router: Navigate to /{resource}/add 또는 /{id}/edit
+    Router->>FormPage: Render formComponent
+
+    FormPage->>FormPage: isUpdate = !!params.id
+
+    FormPage->>UseResource: useResource(resourceName)
+    UseResource-->>FormPage: { resource }
+
+    alt Update Mode (isUpdate = true)
+        FormPage->>UseQuery: useQuery(query, { id })
+        UseQuery-->>FormPage: { data }
+        Note over FormPage: obj = data의 첫 번째 값
+    else Create Mode
+        Note over FormPage: obj = null
+    end
+
+    FormPage->>UseFormFields: useFormFields({ fields, obj, normalizers })
+    UseFormFields-->>FormPage: { fields, flatFields, flatFieldNames }
+
+    FormPage->>UseFormDefaultValues: useFormDefaultValues(flatFields, { obj, searchParams })
+    UseFormDefaultValues-->>FormPage: defaultValues
+
+    FormPage->>MutationForm: Render
+    Note over MutationForm: mutation = isUpdate ? updateMutation : createMutation
+
+    rect rgb(240, 248, 255)
+        Note over MutationForm,Form: 폼 렌더링
+        MutationForm->>Form: meta, defaultValues, onSubmit
+        Form-->>User: 폼 필드 표시
+    end
+
+    User->>Form: 데이터 입력 및 Submit
+
+    rect rgb(255, 248, 240)
+        Note over MutationForm: Mutation 실행
+        Form->>MutationForm: onSubmit(formData)
+        MutationForm->>MutationForm: normalizeData(formData)
+        MutationForm->>UseMutation: mutate({ variables })
+        UseMutation-->>MutationForm: { data, errors }
+    end
+
+    alt Success
+        MutationForm->>MutationForm: message.success()
+        MutationForm->>FormPage: onSuccess(object)
+        FormPage->>Router: navigate(detailUrl)
+    else Error
+        MutationForm->>Form: setError(fieldErrors)
+        Form-->>User: 에러 메시지 표시
+    end

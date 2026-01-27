@@ -1,0 +1,73 @@
+flowchart TB
+    subgraph ComponentHierarchy["컴포넌트 계층"]
+        direction TB
+        
+        subgraph PageComponents["페이지 컴포넌트 (components/pages)"]
+            LP["ListPage"]
+            DP["DetailPage"]
+            FP["FormPage"]
+        end
+
+        subgraph ListPageChildren["ListPage 하위"]
+            LT["ListTable"]
+            LTT["ListTableWithTabs"]
+            
+            subgraph ListTableChildren["ListTable 하위"]
+                FF["FilterForm"]
+                Tbl["Table"]
+                Pag["Paginator"]
+                LA["ListAction"]
+            end
+        end
+
+        subgraph DetailPageChildren["DetailPage 하위"]
+            DS["DetailSummary"]
+            TabsC["Tabs"]
+            DPEA["DetailPageExtraActions"]
+            
+            subgraph DetailActions["Extra Actions"]
+                DelBtn["DeleteButton"]
+                ActBtn["ActivateButton"]
+                AprBtn["ApproveButton"]
+                HidBtn["ForceHideButton"]
+            end
+        end
+
+        subgraph FormPageChildren["FormPage 하위"]
+            MF["MutationForm"]
+            
+            subgraph MutationFormChildren["MutationForm 하위"]
+                FormC["Form"]
+                Fields["Field Components"]
+            end
+        end
+
+        subgraph SharedComponents["공통 컴포넌트"]
+            CanC["Can"]
+            Breadcrumb["Breadcrumb"]
+            PageHeader["PageHeader"]
+        end
+    end
+
+    LP --> LT
+    LP --> LTT
+    LT --> FF
+    LT --> Tbl
+    LT --> Pag
+    LT --> LA
+
+    DP --> DS
+    DP --> TabsC
+    DP --> DPEA
+    DPEA --> DelBtn
+    DPEA --> ActBtn
+    DPEA --> AprBtn
+    DPEA --> HidBtn
+
+    FP --> MF
+    MF --> FormC
+    FormC --> Fields
+
+    LP --> SharedComponents
+    DP --> SharedComponents
+    FP --> SharedComponents

@@ -1,0 +1,31 @@
+flowchart TB
+    subgraph App["App (App.jsx)"]
+        ApolloProvider --> PubSubProvider
+        PubSubProvider --> God["God Context (AppProvider)"]
+        God --> AuthProvider["AuthenticationProvider"]
+        AuthProvider --> TimezoneProvider
+        TimezoneProvider --> MarketplaceProvider
+        MarketplaceProvider --> AppRouter
+    end
+
+    subgraph GodContext["God Context"]
+        Resources["resources: BuiltResourceMap"]
+        Menus["menus: BuiltMenu[]"]
+        ColorMode["colorMode: light | dark"]
+        MenuContext["selectedMenuContext"]
+    end
+
+    subgraph Routing["AppRouter - 동적 라우팅"]
+        ResourcesLoop["resources.map(resource => ...)"]
+        ListRoute["/:namePlural/list/* → listComponent"]
+        DetailRoute["/:namePlural/:id/* → detailComponent"]
+        CreateRoute["/:namePlural/add → formComponent"]
+        UpdateRoute["/:namePlural/:id/edit → formComponent"]
+    end
+
+    God --> GodContext
+    AppRouter --> Routing
+    ResourcesLoop --> ListRoute
+    ResourcesLoop --> DetailRoute
+    ResourcesLoop --> CreateRoute
+    ResourcesLoop --> UpdateRoute

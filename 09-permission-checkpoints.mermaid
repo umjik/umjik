@@ -1,0 +1,46 @@
+flowchart TB
+    subgraph PermissionPoints["권한 체크 포인트"]
+        direction TB
+        
+        subgraph MenuLevel["메뉴 레벨"]
+            MenuPerm["menu.permission<br/>{action, targetType}"]
+            MenuVisible["메뉴 표시/숨김"]
+        end
+
+        subgraph ListLevel["ListPage 레벨"]
+            CreateBtn["Create 버튼<br/>action: create"]
+            RowActions["Row Actions<br/>update, delete, activate"]
+            CSVDownload["CSV Download<br/>action: list"]
+        end
+
+        subgraph DetailLevel["DetailPage 레벨"]
+            EditBtn["Edit 버튼<br/>action: update"]
+            RefreshBtn["Refresh 버튼<br/>action: read"]
+            TabPerm["Tab 표시<br/>tab.permission"]
+            ExtraAct["Extra Actions<br/>delete, activate, approve, hide"]
+        end
+
+        subgraph FormLevel["FormPage 레벨"]
+            FieldPerm["Field 권한<br/>field.permission"]
+            SubmitPerm["Submit 권한<br/>create / update"]
+        end
+    end
+
+    subgraph CanInput["CanInput 구조"]
+        Action["action: string<br/>list, create, update, delete,<br/>activate, inactivate, approve, disapprove,<br/>hide, unhide, view/admin/*"]
+        TargetType["targetType?: string<br/>USER, PRODUCT, ORDER..."]
+        TargetId["targetId?: string<br/>특정 객체 ID"]
+        Field["field?: string<br/>특정 필드"]
+    end
+
+    MenuPerm --> MenuVisible
+    
+    CreateBtn --> CanInput
+    RowActions --> CanInput
+    
+    EditBtn --> CanInput
+    RefreshBtn --> CanInput
+    TabPerm --> CanInput
+    ExtraAct --> CanInput
+    
+    FieldPerm --> CanInput

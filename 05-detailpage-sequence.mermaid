@@ -1,0 +1,61 @@
+sequenceDiagram
+    participant User as User
+    participant Router as Router
+    participant DetailPage as DetailPage
+    participant UseResource as useResource
+    participant UseQuery as useQuery
+    participant UseAbilities as useAbilities
+    participant UseFields as useFields
+    participant Can as Can
+    participant Tabs as Tabs
+    participant ExtraActions as ExtraActions
+
+    User->>Router: Navigate to /{resource}/{id}
+    Router->>DetailPage: Render detailComponent
+
+    DetailPage->>UseResource: useResource(resourceName)
+    UseResource-->>DetailPage: { resource, hasForm, appPreviewField }
+
+    DetailPage->>UseQuery: useQuery(query, { id })
+    UseQuery-->>DetailPage: { data, loading, refetch }
+    
+    Note over DetailPage: obj = data의 첫 번째 값
+
+    DetailPage->>UseAbilities: useAbilities(tabAbilityKeys)
+    UseAbilities-->>DetailPage: { abilities: boolean[] }
+
+    DetailPage->>UseFields: useFields(fields)
+    UseFields-->>DetailPage: { fields: BuiltField[] }
+
+    rect rgb(240, 248, 255)
+        Note over DetailPage: 기본 정보 표시
+        DetailPage->>DetailPage: Card로 fields 렌더링
+        loop Each Field
+            DetailPage->>DetailPage: field.render(field, obj)
+        end
+    end
+
+    rect rgb(255, 248, 240)
+        Note over DetailPage: 버튼 권한 체크
+        DetailPage->>Can: action="update" targetType targetId
+        Can-->>DetailPage: Edit 버튼 표시 여부
+        
+        DetailPage->>Can: action="read" targetType targetId
+        Can-->>DetailPage: Refresh 버튼 표시 여부
+    end
+
+    rect rgb(240, 255, 240)
+        Note over DetailPage: 탭 렌더링
+        DetailPage->>Tabs: tabs.filter(tab => abilities[i])
+        Tabs-->>User: 권한 있는 탭만 표시
+        
+        User->>Tabs: Tab 클릭
+        Tabs->>Router: navigate(tabKey)
+    end
+
+    rect rgb(255, 240, 245)
+        Note over DetailPage: Extra Actions
+        DetailPage->>ExtraActions: extraActions 렌더링
+        ExtraActions->>Can: action별 권한 체크
+        Can-->>ExtraActions: Delete, Activate, Approve 등
+    end

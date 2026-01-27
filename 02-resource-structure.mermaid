@@ -1,0 +1,44 @@
+flowchart TB
+    subgraph ResourceDefinition["Resource 정의 (resources.ts)"]
+        OriginalResource["원본 Resource 배열"]
+        InferResource["inferResource()"]
+        BuiltResource["BuiltResource"]
+    end
+
+    subgraph ResourceFields["Resource 필수 필드"]
+        Name["name: string"]
+        NamePlural["namePlural: string"]
+        Type["type: string (camelCase)"]
+        TypeName["typeName: string (SNAKE_CASE)"]
+        KeyField["keyField: 'id'"]
+        LabelField["labelField?: string"]
+    end
+
+    subgraph ResourceURLs["URL 자동 생성"]
+        BaseUrl["baseUrl: /{namePlural}"]
+        ListUrl["listUrl: /{namePlural}/list"]
+        CreateUrl["createUrl: /{namePlural}/add"]
+        DetailUrlGetter["detailUrlGetter: /{namePlural}/{id}"]
+        UpdateUrlGetter["updateUrlGetter: /{namePlural}/{id}/edit"]
+    end
+
+    subgraph ResourceComponents["페이지 컴포넌트"]
+        ListComponent["listComponent: React.ComponentType"]
+        DetailComponent["detailComponent: React.ComponentType"]
+        FormComponent["formComponent: React.ComponentType"]
+        SelectComponent["selectComponent: React.ComponentType"]
+    end
+
+    subgraph ResourceOptions["추가 옵션"]
+        Draftable["draftable: boolean"]
+        CsvDownloadable["csvDownloadable: boolean"]
+        ParentResource["parentResource: string"]
+        MaskPrivateFields["maskPrivateFields: boolean"]
+    end
+
+    OriginalResource --> InferResource
+    InferResource --> BuiltResource
+    BuiltResource --> ResourceFields
+    BuiltResource --> ResourceURLs
+    BuiltResource --> ResourceComponents
+    BuiltResource --> ResourceOptions
